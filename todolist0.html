@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="App">
+<head>
+	<meta charset="UTF-8">
+	<title>TodoList</title>
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
+
+		.todo {
+			width: 300px;
+			margin: 100px auto;
+		}
+
+		.todo dd {
+			overflow: hidden;
+		}
+
+		.todo input[type="checkbox"] {
+			float: left;
+		}
+
+		.todo a {
+			float: right;
+		}
+	</style>
+</head>
+<body ng-app="App">
+	
+	<div class="todo" ng-controller="TodoListController">
+		<form ng-submit="addItem()">
+			<label for="">添加事项</label>
+			<input type="text" ng-model="todo" >
+		</form>
+		<dl>
+			<dt>待办事项</dt>
+			<dd ng-repeat="(key, todo) in todos">
+				<input type="checkbox" ng-click="done(key)" ng-checked="todo.flag"  >
+				{{todo.text}}
+				<a ng-click="delete(todos,key)" cursor='pointer'>删除</a>
+			</dd>
+			<dt>已办事项{{doneTodos.length}}</dt>
+			<dd ng-repeat="todo in doneTodos">
+				<input type="checkbox" ng-checked="todo.flag" ng-click="undone(key)">
+				<s>{{todo.text}}</s>
+				<a  ng-click="delete(doneTodos,key)">删除</a>
+			</dd>
+			<dt>未完成{{todos.length}}</dt>
+		</dl>
+	</div>
+
+<script src="./angular.min.js"></script>
+<script>
+
+	var App = angular.module('App',[]);
+	App.controller('TodoListController',['$scope',function($scope){
+		//待办事项
+		// $scope.todos = [
+		// 	{text: 'yingyu',flag: false},
+		// 	{text: 'yuwen',flag: true},			
+		// ];
+		$scope.todos = [];
+		//添加待办事项
+		$scope.addItem = function(){
+			$scope.todos.push({text:$scope.todo,flag:false});
+			$scope.todo = ''
+		}
+		//完成事项
+		$scope.doneTodos =[];
+		$scope.done = function(key){
+			//alert(key)
+			var todo = $scope.todos.splice(key,1)[0];
+			todo.flag = true;
+			$scope.doneTodos.push(todo);
+		}
+
+		//取消已完成
+		$scope.undone = function(key){
+			var untodo = $scope.doneTodos.splice(key,1)[0];
+			untodo.flag = false;
+			$scope.todos.push(untodo)
+		}
+
+		//删除
+		$scope.delete = function(todos,key){
+			//console.log(todos);
+			todos.splice(key,1);
+		}
+	}])
+
+</script>
+	
+</body>
+</html>
